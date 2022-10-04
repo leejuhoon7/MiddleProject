@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.jtrip.mybatis.mapper.ReviewMapper">
+
+	 <select id="reviewSelectList"
+      resultType="co.jtrip.review.service.ReviewVO">
+      SELECT * FROM REVIEW 
+      WHERE REVIEW_LOCAL = #{reviewLocal}
+      ORDER BY REVIEW_NO DESC
+   </select>
+
+	 <select id="reviewSelect"
+      resultType="co.jtrip.review.service.ReviewVO">
+      SELECT *
+      FROM REVIEW
+      WHERE REVIEW_NO= #{reviewNo}
+   </select>
+
+	 <insert id="reviewInsert">
+      <selectKey keyProperty="reviewNo" resultType="int"
+         order="BEFORE">
+         SELECT CASE WHEN MAX(REVIEW_NO) IS NULL THEN 1 ELSE
+         MAX(REVIEW_NO) + 1 END AS NO
+         FROM REVIEW
+      </selectKey>
+      INSERT INTO REVIEW 
+      VALUES(#{reviewNo},#{reviewTitle},#{memberId}, SYSDATE,
+      #{reviewContent},#{reviewScore},#{reviewImg}, #{reviewImgDir}, 0, #{reviewLocal})
+
+   </insert>
+
+
+	 <update id="reviewUpdate" >
+      UPDATE REVIEW
+      <set>
+      <if test="reviewTitle != null"> REVIEW_TITLE = #{reviewTitle},</if>
+       <if test="reviewContent != null"> REVIEW_CONTENT = #{reviewContent},</if>
+        <if test="reviewScore != null"> REVIEW_SCORE = #{reviewScore},</if>
+        <if test="reviewImg != null"> REVIEW_IMG = #{reviewImg},</if>
+         <if test="reviewImgDir != null"> REVIEW_IMG_DIR = #{reviewImgDir},</if>
+        <if test="reviewLocal != null"> REVIEW_LOCAL = #{reviewLocal}</if>
+      </set>
+      WHERE REVIEW_NO = #{reviewNo}
+   </update>
+   
+	  <delete id="reviewDelete">
+      DELETE
+      FROM REVIEW
+      WHERE REVIEW_NO = #{reviewNo}
+
+   </delete>
+
+   <update id="reviewHitUpdate" parameterType="int">
+      UPDATE REVIEW
+      SET REVIEW_HIT = REVIEW_HIT + 1
+      WHERE REVIEW_NO = #{reviewNo}
+   </update>
+   
+   	 <select id="myReviewSelectList"
+      resultType="co.jtrip.review.service.ReviewVO">
+      SELECT * FROM REVIEW 
+   </select>
+
+</mapper>

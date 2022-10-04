@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.jtrip.mybatis.mapper.ProductMapper">
+
+   <select id="productSelectList" resultType="co.jtrip.product.service.ProductVO">
+      SELECT * FROM PRODUCT ORDER BY PRODUCT_NO DESC
+   </select>
+
+   <select id="productSelect" resultType="co.jtrip.product.service.ProductVO">
+      SELECT * 
+      FROM PRODUCT
+      WHERE PRODUCT_NO = #{productNo}
+   </select>
+   
+   <insert id="productInsert">
+      <selectKey keyProperty="productNo" resultType="int" order="BEFORE">
+         SELECT CASE WHEN MAX(PRODUCT_NO) IS NULL THEN 1 ELSE MAX(PRODUCT_NO) + 1 END AS NO
+         FROM PRODUCT
+      </selectKey>
+
+      INSERT INTO PRODUCT
+      VALUES(#{productNo},#{productDate},#{productName},#{productPrice},#{productImg},#{productImgName})
+   </insert>
+   
+   <update id="productUpdate">
+      UPDATE PRODUCT
+      <set>
+         <if test="productDate != null"> PRODUCT_DATE = #{productDate},</if>
+         <if test="productName != null"> PRODUCT_NAME = #{productName},</if>
+         <if test="productPrice != null"> PRODUCT_PRICE = #{productPrice},</if>
+         <if test="productImg != null"> PRODUCT_IMG = #{productImg}</if>
+      </set>
+      WHERE PRODUCT_NO = #{productNo}
+   </update>
+   
+   <delete id="productDelete">
+      DELETE FROM PRODUCT WHERE PRODUCT_NO = #{productNo}
+   </delete>
+</mapper>

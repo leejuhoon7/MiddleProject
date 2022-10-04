@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.jtrip.mybatis.mapper.ReplyMapper">
+		
+		
+		
+		
+		<select id="replySelectList" resultType="co.jtrip.reply.service.ReplyVO">
+			select * from reply where qna_no = #{qnaNo }
+		</select>
+	
+	
+	<insert id="replyInsert">
+		<selectKey keyProperty="replyNo" resultType="int"
+			order="BEFORE">
+			SELECT CASE WHEN MAX(REPLY_NO) IS NULL THEN 1 ELSE
+			MAX(REPLY_NO) + 1 END
+			FROM Reply
+		</selectKey>
+
+		INSERT INTO reply
+		VALUES(#{replyNo},#{memberId},sysdate,#{replyContent},#{qnaNo})
+	</insert>
+		<delete id="qnaDelete">
+			delete from reply where qna_no = #{qnaNo}
+		</delete>
+		
+		<delete id="replyDelete">
+			delete from  reply where reply_no = #{replyNo}
+		
+		</delete>
+</mapper>

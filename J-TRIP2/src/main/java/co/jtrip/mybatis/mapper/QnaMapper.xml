@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.jtrip.mybatis.mapper.QnaMapper">
+
+	<select id="qnaSelectList"
+		resultType="co.jtrip.qna.service.QnaVO">
+		SELECT * FROM QNA 
+		ORDER BY QNA_NO DESC
+	</select>
+
+	<select id="qnaSelect"
+		resultType="co.jtrip.qna.service.QnaVO">
+		SELECT * FROM QNA WHERE QNA_NO = #{qnaNo}
+	</select>
+
+	<insert id="qnaInsert">
+		<selectKey keyProperty="qnaNo" resultType="int"
+			order="BEFORE">
+			SELECT CASE WHEN MAX(QNA_NO) IS NULL THEN 1 ELSE
+			MAX(QNA_NO) + 1 END
+			FROM QNA
+		</selectKey>
+		INSERT INTO QNA
+		VALUES(#{memberId},#{qnaNo},#{qnaTitle},SYSDATE,#{qnaContent})
+		
+	</insert>
+
+	<update id="qnaUpdate">
+		UPDATE QNA
+		<set>
+			<if test="qnaTitle != null"> QNA_TITLE = #{qnaTitle},</if>
+			<if test="qnaContent != null"> QNA_CONTENT = #{qnaContent}</if>
+
+		</set>
+		WHERE qna_NO = #{qnaNo}
+	</update>
+	
+	
+	<delete id="qnaDelete">
+		DELETE FROM QNA WHERE QNA_NO = #{qnaNo}
+	</delete>
+
+
+</mapper>
